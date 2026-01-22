@@ -176,8 +176,8 @@ lifetable <- function(group, sex, e0 = NULL){
     if (sex == 0) return(hadza_mortality_female)
     return(hadza_mortality_male)
   } else if (group == "kung"){
-    if (sex == 0) return(lifetable_UN(e0 = e0, sex = "Female"))
-    return(lifetable_UN(e0 = e0, sex = "Male"))
+    if (sex == 0) return(kung_mortality_both)
+    return(kung_mortality_both)
   } else if (group == "avg"){
     if (sex == 0) return(lifetable_UN(e0 = e0, sex = "Female"))
     return(lifetable_UN(e0 = e0, sex = "Male"))

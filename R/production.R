@@ -134,7 +134,7 @@ productivity <- function(age, m, k, b, eta, beta, alpha, labor){
 # units are kg meat per trip
 
 # get_koster_model <- function(){
-#   load(here("data", "Koster osfstorage-archive/model_fix_17092018.Rdata"))
+#   load("https://osf.io/2kzb6/files/osfstorage")
 #   rstan::extract(mfit)
 # }
 

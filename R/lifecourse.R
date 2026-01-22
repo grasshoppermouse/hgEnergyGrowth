@@ -11,7 +11,8 @@ sum_resident_children <- function(wife_age, afb, menopause_age, births, wife_sur
   wife_now_index <- wife_age - afb + 1
   wife_then_index <- wife_age_then - afb + 1
 
-  birth_window <- births[wife_now_index:wife_then_index] # births backwards from current wife age for afb years or to afb
+  # births backwards from current wife age for afb years or to afb
+  birth_window <- births[wife_now_index:wife_then_index]
 
   return(
     sum(
@@ -124,7 +125,8 @@ hg_lifecourse <- function(
     pregnancy = pregnancies, #rep(c(F, F, T), 28)[1:num_ages],
     # pregnancy_cost = 0.05*cumsum(preg_cost*pregnancy)^2, # Needs work
     births = births,
-    fertility = cumsum(births),
+    fertility = cumsum(births), # Conditional on wife survival to age x
+    fertility2 = cumsum(births * wife_survival), # Taking wife survival into account
     child_age = wife_age - afb, # Starts at 0
     child_index = child_age + 1, # Age + 1
     girl_survival = lt_f$lx[child_index], # Presumably, mother survival is baked in to these values
