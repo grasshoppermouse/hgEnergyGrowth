@@ -156,14 +156,20 @@ productivity <- function(age, m, k, b, eta, beta, alpha, labor){
 koster2020skill <- function(age){
   if (min(age) < 0 || max(age) > 80) stop("Ages must be between 0 and 80 years")
 
-  k <- exp(koster2020posterior$lifehistmeans[, 1])
-  m <- exp(koster2020posterior$lifehistmeans[, 2])
-  b <- exp(koster2020posterior$lifehistmeans[, 3])
-
-  # x_seq = seq(from = 0, to = 1, length.out = 81)
-  skill_at_x <- sapply(age, function(x) skill_koster2020(x, k, m, b))
-  skill <- apply(skill_at_x, 2, mean)
-  skill / max(skill)
+  # This code is commented out because it relies on a
+  # model object from Koster et al. 2002 that is too
+  # large to host on github. Instead, it uses the
+  # precomputed vector
+  #
+  # k <- exp(koster2020posterior$lifehistmeans[, 1])
+  # m <- exp(koster2020posterior$lifehistmeans[, 2])
+  # b <- exp(koster2020posterior$lifehistmeans[, 3])
+  #
+  # # x_seq = seq(from = 0, to = 1, length.out = 81)
+  # skill_at_x <- sapply(age, function(x) skill_koster2020(x, k, m, b))
+  # skill <- apply(skill_at_x, 2, mean)
+  # skill / max(skill)
+  koster2020skillvec[age+1]
 }
 
 # According to the code, age 0.5 = 40, so 1 = 80 years old
