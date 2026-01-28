@@ -27,6 +27,6 @@ in the life of a hunter-gatherer family, and the columns include variables such 
 
 ``` r
 library(hgEnergyGrowth)
-out <- hg_lifecourse
+out <- hg_lifecourse()
 ```
 
