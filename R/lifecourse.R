@@ -3,7 +3,7 @@
 # Lifecourse functions -----------------------------------------------------
 
 # child_values can be vector of child_survival, childTEE, or child_production
-sum_resident_children <- function(wife_age, afb, menopause_age, births, wife_survival, child_values){
+sum_resident_children <- function(wife_age, afb, menopause_age, births, child_values){
 
   # Window: maximum child residence is afb years, i.e., age 0:(afb-1), or index 1:afb
   wife_age_then <- ifelse(wife_age - afb < afb, afb, wife_age - afb + 1)
@@ -16,7 +16,7 @@ sum_resident_children <- function(wife_age, afb, menopause_age, births, wife_sur
 
   return(
     sum(
-      wife_survival[wife_now_index:wife_then_index] * birth_window * child_values[1:length(birth_window)]
+      birth_window * child_values[1:length(birth_window)]
     )
   )
 }
@@ -121,22 +121,20 @@ hg_lifecourse <- function(
     husband_wife_ratio = husband_num / wife_num,
     wife_ex = lt_f$ex[wife_age + 1], # lifespan remaining
     husband_ex = lt_m$ex[husband_age + 1], # lifespan remaining
-    # three_yr_survival = map_dbl(husband_age, \(x) prod(lt_m$px[x:x+3])),
     pregnancy = pregnancies, #rep(c(F, F, T), 28)[1:num_ages],
     # pregnancy_cost = 0.05*cumsum(preg_cost*pregnancy)^2, # Needs work
-    births = births,
-    fertility = cumsum(births), # Conditional on wife survival to age x
-    fertility2 = cumsum(births * wife_survival), # Taking wife survival into account
+    births = births * wife_survival, # births accounting for wife mortality
+    fertility = cumsum(births > 0), # Total births for wives who survive to age x
+    fertility2 = cumsum(births), # Taking wife mortality into account
     child_age = wife_age - afb, # Starts at 0
     child_index = child_age + 1, # Age + 1
     girl_survival = lt_f$lx[child_index], # Presumably, mother survival is baked in to these values
     boy_survival = SRB * lt_m$lx[child_index],
     child_survival = (boy_survival + girl_survival)/2,
-    # surviving_children = cumsum(child_survival),
 
-    wifeTEE = wife_survival * TEE2(wife_age, 0, group, pregnancy), #TEE(hg_weight(wife_age, 0, pregnancy, group), wife_age, sex = 0),
-    husbandTEE = husband_survival * TEE2(husband_age, 1, group), #TEE(hg_weight(husband_age, 1, 0, group), husband_age, sex = 1),
-    childTEE = child_survival * TEE2(child_age, NA, group), #(TEE(hg_weight(child_age, 0, 0, group), age = child_age, sex = 0) + TEE(hg_weight(child_age, 1, 0, group), age = child_age, sex = 1))/2,
+    wifeTEE = wife_survival * TEE2(wife_age, 0, group, pregnancy),
+    husbandTEE = husband_survival * TEE2(husband_age, 1, group),
+    childTEE = child_survival * TEE2(child_age, NA, group),
     wife_production = wife_survival * TEEadult_f * hg_productivity(wife_age, 0, TEE_prop = TEE_prop_f, alpha = alpha_f, b1 = b1_f, age50 = age50_f),
     husband_production = husband_survival * TEEadult_m * hg_productivity(husband_age, 1, TEE_prop = TEE_prop_m, alpha = alpha_m, b1 = b1_m, age50 = age50_m),
     child_production = child_survival * TEEadult_avg * hg_productivity_avg(child_age, TEE_prop_f, alpha_f, b1_f, age50_f, TEE_prop_m, alpha_m, b1_m, age50_m),
@@ -146,9 +144,9 @@ hg_lifecourse <- function(
     # Additionally, whereas the preceding child values are conditional on the
     # child being born, the following values are conditional on the wife
     # surviving to give birth
-    resident_children = purrr::map_dbl(wife_age, \(wifeage) sum_resident_children(wifeage, afb, menopause_age, births, wife_survival, child_survival)),
-    total_child_consumption = purrr::map_dbl(wife_age, \(wifeage) sum_resident_children(wifeage, afb, menopause_age, births, wife_survival, childTEE)), # cumsum(child_consumption),
-    total_child_production = purrr::map_dbl(wife_age, \(wifeage) sum_resident_children(wifeage, afb, menopause_age, births, wife_survival, child_production)), # cumsum(child_production),
+    resident_children = purrr::map_dbl(wife_age, \(wifeage) sum_resident_children(wifeage, afb, menopause_age, births, child_survival)),
+    total_child_consumption = purrr::map_dbl(wife_age, \(wifeage) sum_resident_children(wifeage, afb, menopause_age, births, childTEE)),
+    total_child_production = purrr::map_dbl(wife_age, \(wifeage) sum_resident_children(wifeage, afb, menopause_age, births, child_production)),
 
     family_size = resident_children + wife_survival + husband_survival,
     family_consumption = total_child_consumption + wifeTEE + husbandTEE,
