@@ -5,7 +5,6 @@
 \title{Hunter-gatherer lifecourse}
 \usage{
 hg_lifecourse(
-  age_gap = 5,
   SRB = 1.05,
   afb = 18,
   max_age = 80,
@@ -22,12 +21,11 @@ hg_lifecourse(
   TEE_prop_f = 1,
   alpha_f = 0.5,
   b1_f = 0.25,
-  age50_f = 15
+  age50_f = 15,
+  ...
 )
 }
 \arguments{
-\item{age_gap}{The age gap at marriage (e.g., 5: husband is 5 years older than the wife)}
-
 \item{SRB}{Sex ratio at birth, Default: 1.05}
 
 \item{afb}{Age at first birth, Default: 18}

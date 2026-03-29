@@ -4,7 +4,7 @@
 \alias{lifetable}
 \title{Life tables for hunter-gatherer groups}
 \usage{
-lifetable(group, sex, e0 = NULL)
+lifetable(group, sex, e0 = NULL, SRB = 1)
 }
 \arguments{
 \item{group}{character "ache", "hadza", "kung", "avg"}

@@ -4,7 +4,7 @@
 \alias{lifetable_UN}
 \title{UN Model Life Table}
 \usage{
-lifetable_UN(e0, sex, SRB = 1)
+lifetable_UN(e0, sex, SRB = 1.05)
 }
 \arguments{
 \item{e0}{Life expectancy at birth}
