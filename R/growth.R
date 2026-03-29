@@ -93,6 +93,7 @@ ache_wt <- function(age, sex, pregnant=0){
 
   wt <- purrr::map2_dbl(age, sex, \(age, sex) {if (sex == 0) params <- ache_f else params <- ache_m; jpps(age, params)})
   if (identical(0, pregnant)) return(wt)
+  if (identical(1, pregnant)) return(wt + 2.4)
   wt <- ifelse(pregnant == 1, wt + 2.4, wt) # Value from !Kung
   return(wt)
 }
@@ -137,6 +138,7 @@ hadza_wt <- function(age, sex, pregnant = 0){
     sex <- ifelse (sex == 0, "Female", "Male")
     wt <- as.numeric(mgcv::predict.gam(m_hadza_weight, newdata = data.frame(Age=age, Sex=factor(sex))))
     if (identical(0, pregnant)) return(wt)
+    if (identical(1, pregnant)) return(wt + 2.4)
     wt <- ifelse(pregnant == 1, wt + 2.4, wt) # value from !kung
     return(wt)
   }
@@ -162,7 +164,22 @@ hadza_ht <- function(age, sex){
 
 # HG weight ---------------------------------------------------------------
 
+# Speed up weight function
+# hg_wt_avg_f0 <- (ache_wt(0:100, 0) + hadza_wt(0:100, 0) + kung_wt(0:100, 0))/3
+# hg_wt_avg_f1 <- (ache_wt(0:100, 0, 1) + hadza_wt(0:100, 0, 1) + kung_wt(0:100, 0, 1))/3
+# hg_wt_avg_m <- (ache_wt(0:100, 1) + hadza_wt(0:100, 1) + kung_wt(0:100, 1))/3
+
 hg_weight0 <- function(age, sex, pregnant, group){
+
+  if (length(group) == 1 && group == "avg"){
+    wt <-dplyr::case_when(
+      sex == 0 & pregnant == 0 ~ hg_wt_avg_f0[age + 1],
+      sex == 0 & pregnant == 1 ~ hg_wt_avg_f1[age + 1],
+      sex == 1 ~ hg_wt_avg_m[age + 1]
+    )
+    return(wt)
+  }
+
   dplyr::case_when(
     group == "ache" ~ ache_wt(age, sex, pregnant),
     group == "hadza" ~ hadza_wt(age, sex, pregnant),
@@ -198,7 +215,20 @@ hg_weight <- function(age, sex, pregnant, group){
 
 # HG height ---------------------------------------------------------------
 
+# Speed up height function
+# hg_ht_avg_f <- (ache_ht(0:100, 0) + hadza_ht(0:100, 0) + kung_ht(0:100, 0))/3
+# hg_ht_avg_m <- (ache_ht(0:100, 1) + hadza_ht(0:100, 1) + kung_ht(0:100, 1))/3
+
 hg_height0 <- function(age, sex, group){
+
+  if (length(group) == 1 && group == "avg"){
+    ht <- dplyr::case_when(
+      sex == 0 ~ hg_ht_avg_f[age + 1],
+      sex == 1 ~ hg_ht_avg_m[age + 1]
+    )
+    return(ht)
+  }
+
   dplyr::case_when(
     group == "ache" ~ ache_ht(age, sex),
     group == "hadza" ~ hadza_ht(age, sex),
@@ -230,3 +260,8 @@ hg_height <- function(age, sex, group){
   }
   hg_height0(age, sex, group)
 }
+
+# use_data(
+#   davison2021AFB_ALB, hg_ht_avg_f, hg_ht_avg_m, hg_wt_avg_f0, hg_wt_avg_f1, hg_wt_avg_m, kaplan2000female, kaplan2000male, m_ache_height, m_ache_zi,
+#   m_hadza_height,  m_hadza_kcals, m_hadza_weight,  m_kung_height,  m_kung_weight, internal = T, overwrite = T
+# )
