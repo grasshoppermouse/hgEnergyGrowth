@@ -116,7 +116,7 @@ lt_col_interpolate <- function(col, e0, sex) {
 #' }
 #' @rdname lifetable_UN
 #' @export
-lifetable_UN <- function(e0, sex, SRB = 1.0){
+lifetable_UN <- function(e0, sex, SRB = 1.05){
   mx <- lt_col_interpolate('mx', e0, sex)
   ax <- lt_col_interpolate('ax', e0, sex)
   LT_from_mx(mx = mx, ax = ax, sex = sex, SRB = SRB)
@@ -168,7 +168,7 @@ lifetable_UN <- function(e0, sex, SRB = 1.0){
 #' }
 #' @rdname lifetable
 #' @export
-lifetable <- function(group, sex, e0 = NULL){
+lifetable <- function(group, sex, e0 = NULL, SRB = 1.0){
   if (group == "ache"){
     if (sex == 0) return(ache_mortality_female)
     return(ache_mortality_male)
@@ -179,7 +179,7 @@ lifetable <- function(group, sex, e0 = NULL){
     if (sex == 0) return(kung_mortality_both)
     return(kung_mortality_both)
   } else if (group == "avg"){
-    if (sex == 0) return(lifetable_UN(e0 = e0, sex = "Female"))
-    return(lifetable_UN(e0 = e0, sex = "Male"))
+    if (sex == 0) return(lifetable_UN(e0 = e0, sex = "Female", SRB = SRB))
+    return(lifetable_UN(e0 = e0, sex = "Male", SRB = SRB))
   } else stop(paste("Unknown group:", group))
 }
