@@ -345,7 +345,7 @@ hg_skill <- function(age, b1, age50 = 15, b2 = -0.15, max_age = 85){
 #' @export
 hg_productivity <- function(age, sex, TEE_prop = 2, alpha=1, b1 = 0.25, age50, group = "avg"){
   ifelse(
-    age > 80, # age of death
+    age > 80 | age < 3, # age of death
     0,
     TEE_prop * hg_strength(age, sex, group = group)^alpha * hg_skill(age, b1=b1, age50=age50)^(1 - alpha)
   )
