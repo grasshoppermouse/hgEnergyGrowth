@@ -28,7 +28,7 @@ sum_resident_children <- function(wife_age, afb, births, child_values){
 #' @param max_age Maximum human lifespan in years, Default: 80
 #' @param IBI Interbirth interval (currently cannot be changed), Default: 3
 #' @param preg_cost The cost of pregnancy (currently not used), Default: 0.1
-#' @param menopause_age The age at menopause in years (80: no menopause), Default: 80
+#' @param alb The age at last birth in years (80: no menopause), Default: 80
 #' @param group character, one of 'ache', 'hadza', 'kung', 'avg', Default: 'avg'
 #' @param e0_f Female expected lifespan at birth, Default: 35
 #' @param e0_m Male expected lifespan at birth , Default: 30
@@ -73,7 +73,7 @@ hg_lifecourse <- function(
   max_age = 80,
   IBI = 3,
   preg_cost = 0.1, # Not used
-  menopause_age = 80,
+  alb = 80,
   group = "avg",
   e0_f = 35,
   e0_m = 30,
@@ -89,7 +89,7 @@ hg_lifecourse <- function(
   age50_f = 15,
   ... # To absorb unused args
 ){
-  if (menopause_age <= afb) stop("menopause_age is less than or equal to afb (age at first birth)")
+  if (alb <= afb) stop("alb is less than or equal to afb (age at first birth)")
 
   # Simulation starts at wife_age = afb and ends at wife_age = max_age
   num_ages <- max_age - afb + 1
@@ -105,8 +105,8 @@ hg_lifecourse <- function(
 
   preg_schedule <- c(T, rep(F, IBI - 1)) # Integer IBI
   pregnancies <- rep(preg_schedule, ceiling((max_age-afb+2)/IBI)+1)
-  menopause_index <- menopause_age - afb + 2
-  pregnancies[menopause_index:length(pregnancies)] <- F
+  alb_index <- alb - afb + 2
+  pregnancies[alb_index:length(pregnancies)] <- F
   births <- c(F, pregnancies) # Birth occurs in the year after pregnancy
   # Trim to total years, if necessary
   births <- births[2:(num_ages+1)]
@@ -119,6 +119,7 @@ hg_lifecourse <- function(
     husband_num = lt_m$lx[husband_age + 1],
     wife_survival = wife_num/wife_num[1], # Simulation starts conditional on female survival to afb
     husband_survival = husband_num / wife_num[1], # Wives start out with less than 1 husband
+    parents = wife_survival + husband_survival,
     # husband_survival = husband_num/husband_num[1],
     # husband_wife_ratio = husband_num / wife_num,
     wife_ex = lt_f$ex[wife_age + 1], # lifespan remaining
@@ -167,7 +168,10 @@ hg_lifecourse <- function(
     family_size = resident_girls + resident_boys + wife_survival + husband_survival,
     family_consumption = total_girl_consumption + total_boy_consumption + wifeTEE + husbandTEE,
     family_production = total_girl_production + total_boy_production + wife_production + husband_production,
-    energy_balance = family_production - family_consumption
+    energy_balance = family_production - family_consumption,
+
+    energy_balance2 = wife_production + husband_production - family_consumption,
+    cumulativeEB = cumsum(energy_balance)
   )
 }
 

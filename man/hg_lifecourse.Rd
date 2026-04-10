@@ -10,7 +10,7 @@ hg_lifecourse(
   max_age = 80,
   IBI = 3,
   preg_cost = 0.1,
-  menopause_age = 80,
+  alb = 80,
   group = "avg",
   e0_f = 35,
   e0_m = 30,
@@ -36,7 +36,7 @@ hg_lifecourse(
 
 \item{preg_cost}{The cost of pregnancy (currently not used), Default: 0.1}
 
-\item{menopause_age}{The age at menopause in years (80: no menopause), Default: 80}
+\item{alb}{The age at last birth in years (80: no menopause), Default: 80}
 
 \item{group}{character, one of 'ache', 'hadza', 'kung', 'avg', Default: 'avg'}
 
