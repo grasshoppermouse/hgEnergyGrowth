@@ -19,17 +19,21 @@ hg_productivity_avg(
 \arguments{
 \item{age}{Age in years}
 
-\item{sex}{0: female; 1: male}
+\item{TEE_prop_f}{Proportion of adult female TEE}
 
-\item{TEE_prop}{Proportion of adult TEE, Default: 2}
+\item{alpha_f}{Relative importance of female strength vs skill. 0: all skill; 1: all strength}
 
-\item{alpha}{Relative importance of strength vs skill. 0: all skill; 1: all strength, Default: 1}
+\item{b1_f}{Rate of female skill acquisition}
 
-\item{b1}{Rate of skill acquisition, Default: 0.25}
+\item{age50_f}{Age at which female skill is 50\% of adult}
 
-\item{age50}{Age at which skill is 50\% of adult}
+\item{TEE_prop_m}{Proportion of adult male TEE}
 
-\item{group}{character 'ache', 'hadza', 'kung', 'avg'. Default: 'avg'}
+\item{alpha_m}{Relative importance of male strength vs skill. 0: all skill; 1: all strength}
+
+\item{b1_m}{Rate of male skill acquisition}
+
+\item{age50_m}{Age at which male skill is 50\% of adult}
 }
 \value{
 Productivity as a proportion of adult TEE

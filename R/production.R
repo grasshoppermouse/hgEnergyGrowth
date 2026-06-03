@@ -317,12 +317,12 @@ hg_strength <- function(age, sex, pregnant = 0, group = 'avg', max_age = 85, b=-
 #' }
 #' @rdname hg_skill
 #' @export
-hg_skill <- function(age, b1, age50 = 15, b2 = -0.15, max_age = 85){
+hg_skill <- function(age, b1 = 0.25, age50 = 15, b2 = -0.15, max_age = 85){
   ifelse(age < 3, 0, ( 1/(1 + exp(-b1 * (age - age50)))  ) * (1 - exp(b2 * (max_age-age))))
 }
 
 # alpha = 0: all skill; alpha = 1: all strength
-# TEE_prop = TEE of this many adult men (TEE ~ 2800 kcals)
+# TEE_prop = TEE of this many adults
 
 #' @title Hunter-gatherer productivity
 #' @description Productivity as a function of age, sex, and group
@@ -331,7 +331,7 @@ hg_skill <- function(age, b1, age50 = 15, b2 = -0.15, max_age = 85){
 #' @param TEE_prop Proportion of adult TEE, Default: 2
 #' @param alpha Relative importance of strength vs skill. 0: all skill; 1: all strength, Default: 1
 #' @param b1 Rate of skill acquisition, Default: 0.25
-#' @param age50 Age at which skill is 50% of adult
+#' @param age50 Age at which skill is 50% of adult Default: 15
 #' @param group character 'ache', 'hadza', 'kung', 'avg'. Default: 'avg'
 #' @return Productivity as a proportion of adult TEE
 #' @details \code{TEE_prop * hg_strength^alpha * hg_skill^(1-alpha)}
@@ -343,7 +343,7 @@ hg_skill <- function(age, b1, age50 = 15, b2 = -0.15, max_age = 85){
 #' }
 #' @rdname hg_productivity
 #' @export
-hg_productivity <- function(age, sex, TEE_prop = 2, alpha=1, b1 = 0.25, age50, group = "avg"){
+hg_productivity <- function(age, sex, TEE_prop = 2, alpha=1, b1 = 0.25, age50 = 15, group = "avg"){
   ifelse(
     age > 80 | age < 3, # age of death
     0,
@@ -354,12 +354,14 @@ hg_productivity <- function(age, sex, TEE_prop = 2, alpha=1, b1 = 0.25, age50, g
 #' @title Average hunter-gatherer productivity
 #' @description Productivity as a function of age and group averaged across sex
 #' @param age Age in years
-#' @param sex 0: female; 1: male
-#' @param TEE_prop Proportion of adult TEE, Default: 2
-#' @param alpha Relative importance of strength vs skill. 0: all skill; 1: all strength, Default: 1
-#' @param b1 Rate of skill acquisition, Default: 0.25
-#' @param age50 Age at which skill is 50% of adult
-#' @param group character 'ache', 'hadza', 'kung', 'avg'. Default: 'avg'
+#' @param TEE_prop_f Proportion of adult female TEE
+#' @param TEE_prop_m Proportion of adult male TEE
+#' @param alpha_f Relative importance of female strength vs skill. 0: all skill; 1: all strength
+#' @param alpha_m Relative importance of male strength vs skill. 0: all skill; 1: all strength
+#' @param b1_f Rate of female skill acquisition
+#' @param b1_m Rate of male skill acquisition
+#' @param age50_f Age at which female skill is 50% of adult
+#' @param age50_m Age at which male skill is 50% of adult
 #' @return Productivity as a proportion of adult TEE
 #' @details \code{TEE_prop * hg_strength^alpha * hg_skill^(1-alpha)}
 #' @examples

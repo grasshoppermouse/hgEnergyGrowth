@@ -1,3 +1,5 @@
 ^energybalancesupport\.Rproj$
 ^\.Rproj\.user$
 ^data-raw$
+^\.positai$
+^\.claude$

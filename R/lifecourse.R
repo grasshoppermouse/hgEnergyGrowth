@@ -2,10 +2,10 @@
 
 # Lifecourse functions -----------------------------------------------------
 
-# child_values can be vector of child_survival, childTEE, or child_production
+# child_values can be a vector of child_survival, childTEE, or child_production
 sum_resident_children <- function(wife_age, afb, births, child_values){
 
-  # Window: maximum female child residence is afb - 1 years, i.e., age 0:(afb-1), or index 1:afb
+  # Window: maximum child residence is afb - 1 years, i.e., age 0:(afb-1), or index 1:afb
   wife_age_then <- ifelse(wife_age - afb < afb, afb, wife_age - afb + 1)
 
   wife_now_index <- wife_age - afb + 1
@@ -146,12 +146,10 @@ hg_lifecourse <- function(
     husband_production = husband_survival * TEEadult_avg * hg_productivity(husband_age, 1, TEE_prop = TEE_prop_m, alpha = alpha_m, b1 = b1_m, age50 = age50_m),
     girl_production = girl_survival * TEEadult_avg * hg_productivity(child_age, 0, TEE_prop = TEE_prop_f, alpha = alpha_f, b1 = b1_f, age50 = age50_f),
     boy_production = boy_survival * TEEadult_avg * hg_productivity(child_age, 1, TEE_prop = TEE_prop_m, alpha = alpha_m, b1 = b1_m, age50 = age50_m),
-    # child_production = child_survival * TEEadult_avg * hg_productivity_avg(child_age, TEE_prop_f, alpha_f, b1_f, age50_f, TEE_prop_m, alpha_m, b1_m, age50_m),
 
     # The following values are for resident children only, and therefore must
     # be computed for the wife's latest birth to her oldest resident child.
-    # Additionally, whereas the preceding child values are conditional on the
-    # child being born, the following values are conditional on the wife
+    # Additionally, the following values are conditional on the wife
     # surviving to give birth.
     resident_girls = purrr::map_dbl(wife_age, \(wifeage) sum_resident_children(wifeage, afb, births, girl_survival)),
     resident_boys = purrr::map_dbl(wife_age, \(wifeage) sum_resident_children(wifeage, afb, births, boy_survival)),

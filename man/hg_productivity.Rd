@@ -10,7 +10,7 @@ hg_productivity(
   TEE_prop = 2,
   alpha = 1,
   b1 = 0.25,
-  age50,
+  age50 = 15,
   group = "avg"
 )
 }
@@ -25,7 +25,7 @@ hg_productivity(
 
 \item{b1}{Rate of skill acquisition, Default: 0.25}
 
-\item{age50}{Age at which skill is 50\% of adult}
+\item{age50}{Age at which skill is 50\% of adult Default: 15}
 
 \item{group}{character 'ache', 'hadza', 'kung', 'avg'. Default: 'avg'}
 }

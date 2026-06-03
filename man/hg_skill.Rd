@@ -4,7 +4,7 @@
 \alias{hg_skill}
 \title{Hunter-gatherer skill}
 \usage{
-hg_skill(age, b1, age50 = 15, b2 = -0.15, max_age = 85)
+hg_skill(age, b1 = 0.25, age50 = 15, b2 = -0.15, max_age = 85)
 }
 \arguments{
 \item{age}{Age in years}
